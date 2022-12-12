@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class Osoba {
+public abstract class Osoba implements Serializable {
     private String imie, nazwisko, pesel, gender;
     private int wiek;
     private HashMap<String, String> genderDictionary= new HashMap<>();
@@ -31,5 +32,9 @@ public abstract class Osoba {
             }
         }
         return kategoriaID - kategorieOsoba.length;
+    }
+
+    public String[] getKategorie() {
+        return kategorieOsoba;
     }
 }

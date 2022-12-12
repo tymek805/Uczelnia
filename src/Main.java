@@ -1,6 +1,7 @@
 public class Main {
     public static void main(String[] args){
         managementUczelni manager = new managementUczelni();
+        userInput input = new userInput(manager);
 
         // {"Student", "Pracownik", "Kurs"}
         int klasaID = 1;
@@ -15,5 +16,6 @@ public class Main {
         String valueSearchCategory = "Jan";
 
         manager.wyszukanie(klasaID, kategoriaID, valueSearchCategory);
+        manager.saveData();
     }
 }

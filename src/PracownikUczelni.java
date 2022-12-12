@@ -24,4 +24,9 @@ public abstract class PracownikUczelni extends Osoba {
         }
         return kategoriaID - kategoriePracownik.length;
     }
+
+    public String[] getKategorie(){
+        super.getKategorie();
+        return kategoriePracownik;
+    }
 }

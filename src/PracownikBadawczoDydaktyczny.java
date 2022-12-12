@@ -11,6 +11,14 @@ public class PracownikBadawczoDydaktyczny extends PracownikUczelni{
         this.liczbaPublikacji = liczbaPublikacji;
         this.kategoriePracownikBD = new String[]{stanowisko, String.valueOf(liczbaPublikacji)};
     }
+
+    public PracownikBadawczoDydaktyczny(String[] args) {
+        super(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]));
+        this.liczbaPublikacji = Integer.parseInt(args[7]);
+        stanowisko = stanowsika[Integer.parseInt(args[8])];
+        this.kategoriePracownikBD = new String[]{stanowisko, String.valueOf(liczbaPublikacji)};
+    }
+
     public void getStan(){
         super.getStan();
         System.out.println("Liczba publikacji: " + liczbaPublikacji + "\nStanowisko: " + stanowisko);
@@ -29,5 +37,10 @@ public class PracownikBadawczoDydaktyczny extends PracownikUczelni{
             return 0;
         }
         return -1;
+    }
+
+    public String[] getKategorie(){
+        super.getKategorie();
+        return kategoriePracownikBD;
     }
 }

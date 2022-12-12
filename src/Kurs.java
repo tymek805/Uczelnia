@@ -1,4 +1,6 @@
-public class Kurs {
+import java.io.Serializable;
+
+public class Kurs implements Serializable {
     String nazwa, prowadzacy;
     int punktyECTS;
     String[] kategorieKurs;
@@ -7,6 +9,14 @@ public class Kurs {
         this.nazwa = nazwa;
         this.prowadzacy = prowadzacy;
         this.punktyECTS = punktyECTS;
+
+        kategorieKurs = new String[]{nazwa, prowadzacy, String.valueOf(punktyECTS)};
+    }
+
+    public Kurs(String[] args) {
+        this.nazwa = args[0];
+        this.prowadzacy = args[1];
+        this.punktyECTS = Integer.parseInt(args[2]);
 
         kategorieKurs = new String[]{nazwa, prowadzacy, String.valueOf(punktyECTS)};
     }
@@ -24,5 +34,9 @@ public class Kurs {
             }
         }
         return -1;
+    }
+
+    public String[] getKategorie(){
+        return kategorieKurs;
     }
 }

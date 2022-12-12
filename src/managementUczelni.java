@@ -1,15 +1,20 @@
+import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 
 public class managementUczelni {
     private ArrayList<Osoba> osoby = new ArrayList<>();
     private ArrayList<Kurs> kursy = new ArrayList<>();
     private final String[] klasy = {"Student", "Pracownik", "Kurs"};
-
+    private FileChanges fileHandler;
     managementUczelni(){
-        initializeKursy();
-        initializeOsoby();
-        ((Student) osoby.get(0)).rozpoczecieKursu(kursy.get(1));
+        fileHandler = new FileChanges(this);
+        fileHandler.initialize();
+//        initializeKursy();
+//        initializeOsoby();
+//        ((Student) osoby.get(0)).startKursu(kursy.get(1));
     }
+
     private void initializeOsoby(){
         osoby.add(new Student("Kacper", "Nowak", "84012078817", "M", 19,
                 2742, 1, new boolean[]{true, false, true, true, false}));
@@ -36,14 +41,13 @@ public class managementUczelni {
     }
 
     public void wyszukanie(int klasaID, int kategoriaID, String valueSearchCategory){
-        if (klasaID == 0 || klasaID == 1){
+        if (klasaID == 0 || klasaID == 1)
             wyszukanieOsoby(klasy[klasaID], kategoriaID, valueSearchCategory);
-        } else if (klasaID == 2) {
+        else if (klasaID == 2)
             wyszukanieKursu(kategoriaID, valueSearchCategory);
-        }
     }
 
-    public void wyszukanieOsoby(String klasa, int kategoriaID, String valueSearchCategory){
+    private void wyszukanieOsoby(String klasa, int kategoriaID, String valueSearchCategory){
         for (Osoba osoba : osoby){
             if (osoba.getClass().getName().contains(klasa)){
                 if (kategoriaID >= 0){
@@ -57,7 +61,8 @@ public class managementUczelni {
             }
         }
     }
-    public void wyszukanieKursu(int kategoriaID, String valueSearchCategory){
+
+    private void wyszukanieKursu(int kategoriaID, String valueSearchCategory){
         for (Kurs kurs : kursy){
             if (kategoriaID >= 0){
                 int returnVal = kurs.search(kategoriaID, valueSearchCategory);
@@ -69,4 +74,13 @@ public class managementUczelni {
             }
         }
     }
+
+    public void saveData(){
+        fileHandler.savaData(osoby, kursy);
+    }
+
+    public ArrayList<Kurs> getKursy() {return kursy;}
+    public ArrayList<Osoba> getOsoby() {return osoby;}
+    public void setKursy(ArrayList<Kurs> kursy) {this.kursy = kursy;}
+    public void setOsoby(ArrayList<Osoba> osoby) {this.osoby = osoby;}
 }

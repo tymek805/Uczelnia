@@ -21,6 +21,21 @@ public class Student extends Osoba{
         }
         this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow), output};
     }
+
+    public Student(String[] args) {
+        super(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]));
+        this.numerIndeksu = Integer.parseInt(args[5]);
+        this.rokStudiow = Integer.parseInt(args[6]);
+        String[] test = args[7].split(",");
+
+        for (int i = 0; i < test.length; i++){
+            if (test[i].equals("true")){
+                output += ", " + stanStudentaLista[i];
+            }
+        }
+        this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow), output};
+    }
+
     public void getKursy(){
         for (Kurs kurs : kursy){
             kurs.getStan();
@@ -48,7 +63,12 @@ public class Student extends Osoba{
         return -1;
     }
 
-    public void rozpoczecieKursu(Kurs kurs){
+    public String[] getKategorie(){
+        super.getKategorie();
+        return kategorieStudent;
+    }
+
+    public void startKursu(Kurs kurs){
         kursy.add(kurs);
     }
 }
