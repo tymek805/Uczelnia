@@ -1,38 +1,25 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Student extends Osoba{
     private int numerIndeksu, rokStudiow;
-    private String output;
-    private boolean[] stanStudenta;
-    private String[] stanStudentaLista = {"uczestnik programu ERASMUS", "student I-stopnia studiów", "student II-stopnia studiów", "student studiów stacjonarnych", "student studiów niestacjonarnych"};
-    private String[] kategorieStudent;
-    ArrayList<Kurs> kursy = new ArrayList<>();
-    public Student(String imie, String nazwisko, String pesel, String gender, int wiek,
-                   int numerIndeksu, int rokStudiow, boolean[] stanStudenta){
-        super(imie, nazwisko, pesel, gender, wiek);
-        this.numerIndeksu = numerIndeksu;
-        this.rokStudiow = rokStudiow;
-        this.stanStudenta = stanStudenta;
-        for (int i = 0; i < stanStudenta.length; i++){
-            if (stanStudenta[i]){
-                output += ", " + stanStudentaLista[i];
-            }
-        }
-        this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow), output};
-    }
+    private String output = "";
+    private final String[] stanStudentaLista = {"uczestnik programu ERASMUS", "student I-stopnia studiów", "student II-stopnia studiów", "student studiów stacjonarnych", "student studiów niestacjonarnych"};
+    private String[] stanStudenta;
+    private final String[] kategorieStudent;
+    private ArrayList<Kurs> kursy = new ArrayList<>();
 
     public Student(String[] args) {
         super(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]));
         this.numerIndeksu = Integer.parseInt(args[5]);
         this.rokStudiow = Integer.parseInt(args[6]);
-        String[] test = args[7].split(",");
-
-        for (int i = 0; i < test.length; i++){
-            if (test[i].equals("true")){
-                output += ", " + stanStudentaLista[i];
+        stanStudenta = args[7].split(",");
+        for (int i = 0; i < stanStudenta.length; i++){
+            if (stanStudenta[i].equals("T")){
+                output += stanStudentaLista[i] + ", ";
             }
         }
+        if (!output.equals("")){
+        output = output.substring(0, output.length()-2);}
         this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow), output};
     }
 
@@ -63,12 +50,6 @@ public class Student extends Osoba{
         return -1;
     }
 
-    public String[] getKategorie(){
-        super.getKategorie();
-        return kategorieStudent;
-    }
-
-    public void startKursu(Kurs kurs){
-        kursy.add(kurs);
-    }
+    public void startKursu(Kurs kurs){kursy.add(kurs);}
+    public void koniecKursu(Kurs kurs) {kursy.remove(kurs);}
 }

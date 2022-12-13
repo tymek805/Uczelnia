@@ -2,10 +2,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public abstract class Osoba implements Serializable {
-    private String imie, nazwisko, pesel, gender;
+    private final String imie, nazwisko, pesel, gender;
     private int wiek;
-    private HashMap<String, String> genderDictionary= new HashMap<>();
-    private String[] kategorieOsoba;
+    private final HashMap<String, String> genderDictionary= new HashMap<>();
+    private final String[] kategorieOsoba;
 
     Osoba(String imie, String nazwisko, String pesel, String gender, int wiek){
         this.imie = imie;
@@ -20,6 +20,7 @@ public abstract class Osoba implements Serializable {
     }
 
     protected void getStan(){
+        System.out.println(this.getClass().getName());
         System.out.println("Imię: " + imie + "\nNazwisko: "+ nazwisko + "\nPesel: " + pesel +
                 "\nPłeć: "+ genderDictionary.get(gender) + "\nWiek: " + wiek);
     }
@@ -32,9 +33,5 @@ public abstract class Osoba implements Serializable {
             }
         }
         return kategoriaID - kategorieOsoba.length;
-    }
-
-    public String[] getKategorie() {
-        return kategorieOsoba;
     }
 }

@@ -1,17 +1,9 @@
 import java.io.Serializable;
 
 public class Kurs implements Serializable {
-    String nazwa, prowadzacy;
-    int punktyECTS;
-    String[] kategorieKurs;
-
-    public Kurs(String nazwa, String prowadzacy, int punktyECTS){
-        this.nazwa = nazwa;
-        this.prowadzacy = prowadzacy;
-        this.punktyECTS = punktyECTS;
-
-        kategorieKurs = new String[]{nazwa, prowadzacy, String.valueOf(punktyECTS)};
-    }
+    private final String nazwa, prowadzacy;
+    private final int punktyECTS;
+    private final String[] kategorieKurs;
 
     public Kurs(String[] args) {
         this.nazwa = args[0];
@@ -21,7 +13,8 @@ public class Kurs implements Serializable {
         kategorieKurs = new String[]{nazwa, prowadzacy, String.valueOf(punktyECTS)};
     }
 
-    protected void getStan(){
+    public void getStan(){
+        System.out.println(this.getClass().getName());
         System.out.println("Nazwa: " + nazwa + "\nProwadzący: "+ prowadzacy + "\nPunkty ECTS: " + punktyECTS);
         System.out.println("--------------------------------------------------");
     }
@@ -34,9 +27,5 @@ public class Kurs implements Serializable {
             }
         }
         return -1;
-    }
-
-    public String[] getKategorie(){
-        return kategorieKurs;
     }
 }

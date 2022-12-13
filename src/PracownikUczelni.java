@@ -1,6 +1,6 @@
 public abstract class PracownikUczelni extends Osoba {
     private int staz, pensja;
-    private String[] kategoriePracownik;
+    private final String[] kategoriePracownik;
     PracownikUczelni(String imie, String nazwisko, String pesel, String gender, int wiek,
                      int staz, int pensja) {
         super(imie, nazwisko, pesel, gender, wiek);
@@ -23,10 +23,5 @@ public abstract class PracownikUczelni extends Osoba {
             }
         }
         return kategoriaID - kategoriePracownik.length;
-    }
-
-    public String[] getKategorie(){
-        super.getKategorie();
-        return kategoriePracownik;
     }
 }
