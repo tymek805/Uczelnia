@@ -1,16 +1,19 @@
-import java.util.ArrayList;
+package Management;
 
-public class managementUczelni {
+import Objects.*;
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class ManagementUczelni {
     private ArrayList<Osoba> osoby = new ArrayList<>();
     private ArrayList<Kurs> kursy = new ArrayList<>();
     private final FileChanges fileHandler;
 
-    managementUczelni(){
+    public ManagementUczelni(){
         fileHandler = new FileChanges(this);
-//        fileHandler.readData();
-        initializeOsoby();
-        initializeKursy();
-//        ((Student) osoby.get(0)).startKursu(kursy.get(1));
+        fileHandler.readData();
+//        initializeOsoby();
+//        initializeKursy();
     }
 
     private void initializeOsoby(){
@@ -32,46 +35,46 @@ public class managementUczelni {
         osoby.add(new PracownikBadawczoDydaktyczny(new String[]{"Zuzanna", "Czarnecka", "63060351145", "K", "43",
                 "6", "7000", "8", "3"}));
     }
-
     private void initializeKursy(){
         kursy.add(new Kurs(new String[]{"Matematyka", "Jastrzębski", "10"}));
         kursy.add(new Kurs(new String[]{"Język obcy nowożytny", "Karpacka", "15"}));
     }
 
-    public void wyszukanie(String klasaID, int kategoriaID, String searchValue){
+    public ArrayList<Object> wyszukiwanie(String klasaID, int kategoriaID, String searchValue){
         if (klasaID.contains("S") || klasaID.contains("P"))
-            wyszukanieOsoby(klasaID, kategoriaID, searchValue);
+            return wyszukanieOsoby(klasaID, kategoriaID, searchValue);
         else if (klasaID.contains("K"))
-            wyszukanieKursu(kategoriaID, searchValue);
+            return wyszukanieKursu(kategoriaID, searchValue);
+        return null;
     }
 
-    private void wyszukanieOsoby(String klasa, int kategoriaID, String searchValue){
+    private ArrayList<Object> wyszukanieOsoby(String klasa, int kategoriaID, String searchValue){
+        ArrayList<Object> wyszukaneOsoby = new ArrayList<>();
         for (Osoba osoba : osoby){
             if (osoba.getClass().getName().contains(klasa)){
-                if (kategoriaID >= 0)
-                    osoba.search(kategoriaID, searchValue);
+                if (kategoriaID >= 0 && osoba.search(kategoriaID, searchValue) == 0)
+                    wyszukaneOsoby.add(osoba);
                 else
-                    osoba.getStan();
+                    wyszukaneOsoby.add(osoba);
             }
         }
+        return wyszukaneOsoby;
     }
 
-    private void wyszukanieKursu(int kategoriaID, String valueSearchCategory){
+    private ArrayList<Object> wyszukanieKursu(int kategoriaID, String valueSearchCategory){
+        ArrayList<Object> wyszukaneKursy = new ArrayList<>();
         for (Kurs kurs : kursy){
-            if (kategoriaID >= 0){
-                int returnVal = kurs.search(kategoriaID, valueSearchCategory);
-                if (returnVal == 0){
-                    System.out.println("Not suitable...");
-                }
-            } else {
-                kurs.getStan();
-            }
+            if (kategoriaID >= 0 && kurs.search(kategoriaID, valueSearchCategory) == 0)
+                wyszukaneKursy.add(kurs);
+            else
+                wyszukaneKursy.add(kurs);
         }
+        return wyszukaneKursy;
     }
 
     public void saveData(){fileHandler.saveData(osoby, kursy);}
 
-    public void writeDownAll(){
+    public void writeAllDown(){
         for (Osoba osoba : osoby) osoba.getStan();
         for (Kurs kurs : kursy) kurs.getStan();
     }

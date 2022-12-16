@@ -1,3 +1,5 @@
+package Objects;
+
 public class PracownikBadawczoDydaktyczny extends PracownikUczelni{
     private int liczbaPublikacji;
     private final String[] stanowiska = {"Asystent", "Adiunkt", "Profesor Nadzwyczajny", "Profesor Zwyczajny", "Wykładowca"};
@@ -8,7 +10,7 @@ public class PracownikBadawczoDydaktyczny extends PracownikUczelni{
         super(args[0], args[1], args[2], args[3], Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]));
         this.liczbaPublikacji = Integer.parseInt(args[7]);
         stanowisko = stanowiska[Integer.parseInt(args[8])];
-        this.kategoriePracownikBD = new String[]{stanowisko, String.valueOf(liczbaPublikacji)};
+        this.kategoriePracownikBD = new String[]{String.valueOf(liczbaPublikacji), stanowisko};
     }
 
     public void getStan(){

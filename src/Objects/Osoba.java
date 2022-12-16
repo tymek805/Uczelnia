@@ -1,3 +1,5 @@
+package Objects;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -16,11 +18,11 @@ public abstract class Osoba implements Serializable {
 
         genderDictionary.put("M", "Mężczyzna");
         genderDictionary.put("K", "Kobieta");
-        kategorieOsoba = new String[]{imie, nazwisko, pesel, genderDictionary.get(gender)};
+        kategorieOsoba = new String[]{imie, nazwisko, pesel, genderDictionary.get(gender), String.valueOf(wiek)};
     }
 
-    protected void getStan(){
-        System.out.println(this.getClass().getName());
+    public void getStan(){
+        System.out.println(this.getClass().getSimpleName());
         System.out.println("Imię: " + imie + "\nNazwisko: "+ nazwisko + "\nPesel: " + pesel +
                 "\nPłeć: "+ genderDictionary.get(gender) + "\nWiek: " + wiek);
     }

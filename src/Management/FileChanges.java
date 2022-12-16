@@ -1,12 +1,17 @@
+package Management;
+
+import Objects.Kurs;
+import Objects.Osoba;
+
 import java.io.*;
 import java.util.ArrayList;
 
 public class FileChanges implements Serializable {
-    private final managementUczelni manager;
+    private final ManagementUczelni manager;
     private final String pathFile = "daneUczelnia.txt";
     private final String pathBackup = "backupData.txt";
 
-    public FileChanges(managementUczelni manager){
+    public FileChanges(ManagementUczelni manager){
         this.manager = manager;
     }
 

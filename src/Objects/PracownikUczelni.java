@@ -1,3 +1,5 @@
+package Objects;
+
 public abstract class PracownikUczelni extends Osoba {
     private int staz, pensja;
     private final String[] kategoriePracownik;
@@ -10,7 +12,7 @@ public abstract class PracownikUczelni extends Osoba {
         kategoriePracownik = new String[]{String.valueOf(staz), String.valueOf(pensja)};
     }
 
-    protected void getStan(){
+    public void getStan(){
         super.getStan();
         System.out.println("Staż pracy: " + staz + "\nPensja: " + pensja);
     }

@@ -1,3 +1,5 @@
+package Objects;
+
 import java.util.ArrayList;
 
 public class Student extends Osoba{
@@ -14,13 +16,13 @@ public class Student extends Osoba{
         this.rokStudiow = Integer.parseInt(args[6]);
         stanStudenta = args[7].split(",");
         for (int i = 0; i < stanStudenta.length; i++){
-            if (stanStudenta[i].equals("T")){
+            if (stanStudenta[i].matches("T|t|true|tak")){
                 output += stanStudentaLista[i] + ", ";
             }
         }
         if (!output.equals("")){
         output = output.substring(0, output.length()-2);}
-        this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow), output};
+        this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow)};
     }
 
     public void getKursy(){
@@ -44,8 +46,6 @@ public class Student extends Osoba{
                 getStan();
                 return 0;
             }
-        } else if (kategoriaID < 0) {
-            return 0;
         }
         return -1;
     }

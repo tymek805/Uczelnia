@@ -1,3 +1,5 @@
+package Objects;
+
 import java.io.Serializable;
 
 public class Kurs implements Serializable {
@@ -14,7 +16,7 @@ public class Kurs implements Serializable {
     }
 
     public void getStan(){
-        System.out.println(this.getClass().getName());
+        System.out.println(this.getClass().getSimpleName());
         System.out.println("Nazwa: " + nazwa + "\nProwadzący: "+ prowadzacy + "\nPunkty ECTS: " + punktyECTS);
         System.out.println("--------------------------------------------------");
     }
