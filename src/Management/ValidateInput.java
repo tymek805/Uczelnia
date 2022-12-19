@@ -18,16 +18,59 @@ public class ValidateInput {
         return objectType;
     }
 
-    public  int arrayIdxValidator(int arrayLength, int bottomCheck){
+    public int arrayIdxValidator(int arrayLength, int bottomCheck){
         int inputINT;
         try{
             inputINT = scanner.nextInt();
             if (inputINT >= arrayLength || inputINT < bottomCheck) throw new InputMismatchException();
         }catch (InputMismatchException e){
             System.err.print("Niepoprawna wartość!\n-> ");
+            try{Thread.sleep(10);}
+            catch (InterruptedException exception) {exception.printStackTrace();}
             inputINT = arrayIdxValidator(arrayLength, bottomCheck);
+            try{Thread.sleep(10);}
+            catch (InterruptedException exception) {exception.printStackTrace();}
         }
         return inputINT;
+    }
+
+    public int intValidator(){
+        int inputINT;
+        try{
+            inputINT = scanner.nextInt();
+        }catch (InputMismatchException e){
+            System.err.print("Niepoprawna wartość!\n-> ");
+            inputINT = intValidator();
+        }
+        return inputINT;
+    }
+
+    public String genderValidator(){
+        System.out.print("""
+                \n(M)eżczyzna\n
+                (K)obieta
+                ->\s""");
+        String objectType = scanner.next().toUpperCase();
+        while(!objectType.matches("M|K")){
+            System.err.print("Niepoprawna płeć!\n-> ");
+            objectType = scanner.next().toUpperCase();
+        }
+        return objectType;
+    }
+
+    public int stanowiskoValidator(String objectType){
+        String[] stanowiska = new String[0];
+        if (objectType.equals("PBD")){
+            stanowiska = new String[]{"Asystent", "Adiunkt", "Profesor Nadzwyczajny", "Profesor Zwyczajny", "Wykładowca"};
+        } else if (objectType.equals("PA")) {
+            stanowiska = new String[]{"Referent", "Specjalista", "Starszy Specjalista", "Kierownik"};
+        }
+        System.out.println();
+        for (int i = 0; i < stanowiska.length; i++){
+            System.out.println("(" + (i + 1) + ") " + stanowiska[i]);
+        }
+        int val = arrayIdxValidator(stanowiska.length + 1, 1) - 1;
+        return val;
     }
 
     public boolean answerYesOrNoValidator(){

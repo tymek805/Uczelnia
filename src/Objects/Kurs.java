@@ -15,12 +15,6 @@ public class Kurs implements Serializable {
         kategorieKurs = new String[]{nazwa, prowadzacy, String.valueOf(punktyECTS)};
     }
 
-    public void getStan(){
-        System.out.println(this.getClass().getSimpleName());
-        System.out.println("Nazwa: " + nazwa + "\nProwadzący: "+ prowadzacy + "\nPunkty ECTS: " + punktyECTS);
-        System.out.println("--------------------------------------------------");
-    }
-
     public int search(int kategoriaID, String valueSearchCategory){
         if (kategoriaID < kategorieKurs.length && kategoriaID >= 0){
             if (kategorieKurs[kategoriaID].equals(valueSearchCategory)){
@@ -29,5 +23,14 @@ public class Kurs implements Serializable {
             }
         }
         return -1;
+    }
+
+    public int getPunktyECTS() {return punktyECTS;}
+    public String getProwadzacy() {return prowadzacy;}
+
+    public void getStan(){
+        System.out.println(this.getClass().getSimpleName());
+        System.out.println("Nazwa: " + nazwa + "\nProwadzący: "+ prowadzacy + "\nPunkty ECTS: " + punktyECTS);
+        System.out.println("--------------------------------------------------");
     }
 }

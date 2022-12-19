@@ -21,12 +21,6 @@ public abstract class Osoba implements Serializable {
         kategorieOsoba = new String[]{imie, nazwisko, pesel, genderDictionary.get(gender), String.valueOf(wiek)};
     }
 
-    public void getStan(){
-        System.out.println(this.getClass().getSimpleName());
-        System.out.println("Imię: " + imie + "\nNazwisko: "+ nazwisko + "\nPesel: " + pesel +
-                "\nPłeć: "+ genderDictionary.get(gender) + "\nWiek: " + wiek);
-    }
-
     public int search(int kategoriaID, String valueSearchCategory){
         if (kategoriaID < kategorieOsoba.length && kategoriaID >= 0){
             if (kategorieOsoba[kategoriaID].equals(valueSearchCategory)){
@@ -35,5 +29,15 @@ public abstract class Osoba implements Serializable {
             }
         }
         return kategoriaID - kategorieOsoba.length;
+    }
+
+    public String getNazwisko() {return nazwisko;}
+    public String getImie() {return imie;}
+    public int getWiek() {return wiek;}
+
+    public void getStan(){
+        System.out.println(this.getClass().getSimpleName());
+        System.out.println("Imię: " + imie + "\nNazwisko: "+ nazwisko + "\nPesel: " + pesel +
+                "\nPłeć: "+ genderDictionary.get(gender) + "\nWiek: " + wiek);
     }
 }

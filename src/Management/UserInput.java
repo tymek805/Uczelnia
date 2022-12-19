@@ -1,5 +1,9 @@
 package Management;
 
+import Komparatory.SortByECTS_Professor;
+import Komparatory.SortByFullname;
+import Komparatory.SortBySurname;
+import Komparatory.SortBySurnameAge;
 import Objects.*;
 import java.util.*;
 
@@ -18,7 +22,7 @@ public class UserInput extends ValidateInput {
         scanner = getScanner();
         osobaArrayList = manager.getOsoby();
         kursArrayList = manager.getKursy();
-        bigValueSetter();
+        bigValueInitialization();
         startInput();
     }
 
@@ -28,6 +32,7 @@ public class UserInput extends ValidateInput {
                 (wyszukaj) Wyszukaj obiekty
                 (wypisz) Wyświetl wszystkie obiekty
                 (delete) Usuń wybrany obiekt
+                (sort) Posortuj obiekty
                 (pomoc) Wyświetl możliwe komendy
                 (koniec) Kończy działanie programu""";
         String separator = "/////////////////////////////////////////////\n";
@@ -44,9 +49,10 @@ public class UserInput extends ValidateInput {
                 case ("dodaj") -> dodanieObiektu();
                 case ("wypisz") -> manager.writeAllDown();
                 case ("wyszukaj") -> wyszukaj();
+                case ("sort") -> comparison();
                 case ("delete") -> usuwanieObiektu();
                 case ("pomoc") -> System.out.print("");
-                default -> System.out.println("Nieznana funkcja!");
+                default -> System.err.println("Nieznana funkcja!");
             }
         }
         System.out.println(separator);
@@ -64,13 +70,19 @@ public class UserInput extends ValidateInput {
 
         ArrayList<String> skladowe = otrzymajSkladowe(objectType);
         String[] args = new String[skladowe.size()];
-
-        // todo dopracować wpisywanie. Testy dla wieku peselu etc.
-        // todo ważne! dodać wybieranie stanowiska dla pracowników
+        System.out.println();
         for (int i = 0; i < skladowe.size(); i++) {
             System.out.print("Proszę wprowadzić " + skladowe.get(i) + ": ");
             if (skladowe.get(i).equals("Stan Studenta")) args[i] = studentHandler();
-            else args[i] = scanner.next();
+            else {
+                switch (skladowe.get(i)) {
+                    case "Wiek", "Staż pracy", "Pensja", "Liczba publikacji", "Liczba nadgodzin", "Numer indeksu", "Rok studiów", "Punkty ECTS" ->
+                            args[i] = String.valueOf(intValidator());
+                    case "Płeć" -> args[i] = genderValidator();
+                    case "Stanowisko" -> args[i] = String.valueOf(stanowiskoValidator(objectType));
+                    default -> args[i] = scanner.next();
+                }
+            }
         }
 
         Object obj = switch (objectType) {
@@ -85,7 +97,7 @@ public class UserInput extends ValidateInput {
                         System.out.print("(" + (i + 1) + ") ");
                         kursArrayList.get(i).getStan();
                     }
-                    System.out.print(" -> ");
+                    System.out.print("-> ");
                     int kursIDX = arrayIdxValidator(kursArrayList.size(), 1);
                     student.startKursu(kursArrayList.get(kursIDX));
                 }
@@ -167,14 +179,47 @@ public class UserInput extends ValidateInput {
         manager.wyszukiwanie(klasy.get(objectCheck), kategoryCheck, searchValue);
     }
 
+    private void comparison(){
+        System.out.print("""
+                Po czym chcesz posortować?
+                (1) Nazwisko #Osoby
+                (2) Nazwisko i Imię #Osoby
+                (3) Nazwisko i Wiek #Osoby
+                (4) Punkty ECTS i Nazwisko Prowadzącego #Kursy
+                ->\s""");
+        int choiceValue = arrayIdxValidator(5, 1);
+
+        ArrayList<Osoba> sortedOsoby = osobaArrayList;
+        ArrayList<Kurs> sortedKursy = kursArrayList;
+        switch (choiceValue){
+            case 1 -> sortedOsoby.sort(new SortBySurname());
+            case 2 -> sortedOsoby.sort(new SortByFullname());
+            case 3 -> sortedOsoby.sort(new SortBySurnameAge());
+            case 4 -> sortedKursy.sort(new SortByECTS_Professor());
+        }
+        if (choiceValue != 4){
+            for (Osoba osoba:sortedOsoby) {
+                System.out.println(osoba.getNazwisko() + " " + osoba.getImie() + " " + osoba.getWiek());
+            }
+        }else
+            for (Kurs kurs:sortedKursy) {kurs.getStan();}
+    }
+
+    private void finalizer() {
+        manager.setOsoby(osobaArrayList);
+        manager.setKursy(kursArrayList);
+        stillRunning = false;
+    }
+
     private ArrayList<String> otrzymajSkladowe(String optionCheck) {
         ArrayList<String> skladowe = new ArrayList<>();
         if (optionCheck.contains("P") || optionCheck.equals("S")) {
             skladowe.addAll(Arrays.asList("Imię", "Nazwisko", "Pesel", "Płeć", "Wiek"));
             if (optionCheck.contains("P")) {
-                skladowe.addAll(Arrays.asList("Staż pracy", "Pensja", "Stanowisko"));
+                skladowe.addAll(Arrays.asList("Staż pracy", "Pensja"));
                 if (optionCheck.equals("PBD")) skladowe.add("Liczba publikacji");
                 else if (optionCheck.equals("PA")) skladowe.add("Liczba nadgodzin");
+                skladowe.add("Stanowisko");
             } else if (optionCheck.equals("S")) {
                 skladowe.addAll(Arrays.asList("Numer indeksu", "Rok studiów", "Stan Studenta"));
             }
@@ -187,6 +232,7 @@ public class UserInput extends ValidateInput {
     private String studentHandler(){
         String[] stanStudenta = {"uczestnik programu ERASMUS", "student I-stopnia studiów", "student II-stopnia studiów", "student studiów stacjonarnych", "student studiów niestacjonarnych"};
         String output = "";
+        System.out.println();
         for (int j = 0; j < stanStudenta.length; j++) {
             System.out.print("Czy jest to " + stanStudenta[j] + "?\n -> ");
             output += answerYesOrNoValidator();
@@ -194,8 +240,8 @@ public class UserInput extends ValidateInput {
         }
         return output;
     }
-
-    private void bigValueSetter(){
+    
+    private void bigValueInitialization(){
         klasy = new HashMap<>();
         klasy.put("S", "Student");
         klasy.put("P", "Pracownik");
@@ -208,11 +254,5 @@ public class UserInput extends ValidateInput {
         allDeleteCategories.put("PBD", new String[]{"Imię", "Nazwisko", "Staż pracy", "Stanowisko"});
         allDeleteCategories.put("S", new String[]{"Imię", "Nazwisko", "Numer indeksu", "Rok studiów"});
         allDeleteCategories.put("K", new String[]{"Nazwa", "Prowadzący", "Punkty ECTS"});
-    }
-
-    private void finalizer() {
-        manager.setOsoby(osobaArrayList);
-        manager.setKursy(kursArrayList);
-        stillRunning = false;
     }
 }

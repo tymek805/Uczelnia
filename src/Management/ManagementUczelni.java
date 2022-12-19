@@ -2,7 +2,6 @@ package Management;
 
 import Objects.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ManagementUczelni {
     private ArrayList<Osoba> osoby = new ArrayList<>();
