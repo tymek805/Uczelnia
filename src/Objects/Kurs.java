@@ -1,6 +1,7 @@
 package Objects;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Kurs implements Serializable {
     private final String nazwa, prowadzacy;
@@ -18,7 +19,7 @@ public class Kurs implements Serializable {
     public int search(int kategoriaID, String valueSearchCategory){
         if (kategoriaID < kategorieKurs.length && kategoriaID >= 0){
             if (kategorieKurs[kategoriaID].equals(valueSearchCategory)){
-                getStan();
+                printStan();
                 return 0;
             }
         }
@@ -28,9 +29,17 @@ public class Kurs implements Serializable {
     public int getPunktyECTS() {return punktyECTS;}
     public String getProwadzacy() {return prowadzacy;}
 
-    public void getStan(){
+    public void printStan(){
         System.out.println(this.getClass().getSimpleName());
         System.out.println("Nazwa: " + nazwa + "\nProwadzący: "+ prowadzacy + "\nPunkty ECTS: " + punktyECTS);
         System.out.println("--------------------------------------------------");
+    }
+
+    public ArrayList<Object> getStan(){
+        ArrayList<Object> obj = new ArrayList<>();
+        obj.add(nazwa);
+        obj.add(prowadzacy);
+        obj.add(punktyECTS);
+        return obj;
     }
 }

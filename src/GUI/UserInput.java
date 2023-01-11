@@ -1,9 +1,11 @@
-package Management;
+package GUI;
 
 import Komparatory.SortByECTS_Professor;
 import Komparatory.SortByFullname;
 import Komparatory.SortBySurname;
 import Komparatory.SortBySurnameAge;
+import Management.ManagementUczelni;
+import Management.ValidateInput;
 import Objects.*;
 import java.util.*;
 
@@ -51,13 +53,13 @@ public class UserInput extends ValidateInput {
                 case ("wyszukaj") -> wyszukaj();
                 case ("sort") -> comparison();
                 case ("delete") -> usuwanieObiektu();
+                case ("kto") -> manager.ktoNiezdaje();
                 case ("pomoc") -> System.out.print("");
                 default -> System.err.println("Nieznana funkcja!");
             }
         }
         System.out.println(separator);
     }
-
     private void dodanieObiektu() {
         System.out.print("""
                 Dla dodania obiektu wpisz:
@@ -95,7 +97,7 @@ public class UserInput extends ValidateInput {
                     System.out.println("Wybierz kurs: \n");
                     for (int i = 0; i < kursArrayList.size(); i++){
                         System.out.print("(" + (i + 1) + ") ");
-                        kursArrayList.get(i).getStan();
+                        kursArrayList.get(i).printStan();
                     }
                     System.out.print("-> ");
                     int kursIDX = arrayIdxValidator(kursArrayList.size(), 1);
@@ -109,7 +111,6 @@ public class UserInput extends ValidateInput {
         if (obj instanceof Osoba) osobaArrayList.add((Osoba) obj);
         else if (obj instanceof Kurs) kursArrayList.add((Kurs) obj);
     }
-
     private void usuwanieObiektu() {
         // Wybieranie klasy obiektu do usunięcia
         System.out.print("""
@@ -145,7 +146,6 @@ public class UserInput extends ValidateInput {
             else if (object instanceof Kurs) kursArrayList.remove(object);
         }
     }
-
     private void wyszukaj() {
         // Wybranie klasy obiektu do wyszukania
         System.out.println("Co chcesz wyszukać?");
@@ -176,9 +176,12 @@ public class UserInput extends ValidateInput {
         }
 
         // Wyszukanie
-        manager.wyszukiwanie(klasy.get(objectCheck), kategoryCheck, searchValue);
+        ArrayList<Object> objectArrayList = manager.wyszukiwanie(klasy.get(objectCheck), kategoryCheck, searchValue);
+        for (Object obj:objectArrayList){
+            if (obj instanceof Osoba) ((Osoba) obj).printStan();
+            else if (obj instanceof Kurs) ((Kurs) obj).printStan();
+        }
     }
-
     private void comparison(){
         System.out.print("""
                 Po czym chcesz posortować?
@@ -202,7 +205,7 @@ public class UserInput extends ValidateInput {
                 System.out.println(osoba.getNazwisko() + " " + osoba.getImie() + " " + osoba.getWiek());
             }
         }else
-            for (Kurs kurs:sortedKursy) {kurs.getStan();}
+            for (Kurs kurs:sortedKursy) {kurs.printStan();}
     }
 
     private void finalizer() {

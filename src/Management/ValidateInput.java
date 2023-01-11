@@ -35,10 +35,11 @@ public class ValidateInput {
     }
 
     public int intValidator(){
+        String input = scanner.next();
         int inputINT;
         try{
-            inputINT = scanner.nextInt();
-        }catch (InputMismatchException e){
+            inputINT = Integer.parseInt(input);
+        }catch (NumberFormatException e){
             System.err.print("Niepoprawna wartość!\n-> ");
             inputINT = intValidator();
         }
@@ -74,12 +75,12 @@ public class ValidateInput {
     }
 
     public boolean answerYesOrNoValidator(){
-        String input = scanner.next().toLowerCase();
-        while (!input.matches("t|f|true|false|tak|nie")){
+        String input = scanner.next().toUpperCase();
+        while (!input.matches("T|F|TRUE|FALSE|TAK|NIE")){
             System.err.print("Niepoprawna wartość!\n-> ");
             input = scanner.next().toLowerCase();
         }
-        return input.matches("t|true|tak");
+        return input.matches("T|TRUE|TAK");
     }
 
     public Scanner getScanner() {return scanner;}

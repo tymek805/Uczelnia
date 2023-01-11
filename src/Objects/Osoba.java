@@ -1,13 +1,12 @@
 package Objects;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public abstract class Osoba implements Serializable {
     private final String imie, nazwisko, pesel, gender;
-    private int wiek;
-    private final HashMap<String, String> genderDictionary= new HashMap<>();
     private final String[] kategorieOsoba;
+    private int wiek;
 
     Osoba(String imie, String nazwisko, String pesel, String gender, int wiek){
         this.imie = imie;
@@ -16,15 +15,13 @@ public abstract class Osoba implements Serializable {
         this.gender = gender;
         this.wiek = wiek;
 
-        genderDictionary.put("M", "Mężczyzna");
-        genderDictionary.put("K", "Kobieta");
-        kategorieOsoba = new String[]{imie, nazwisko, pesel, genderDictionary.get(gender), String.valueOf(wiek)};
+        kategorieOsoba = new String[]{imie, nazwisko, pesel, gender, String.valueOf(wiek)};
     }
 
     public int search(int kategoriaID, String valueSearchCategory){
         if (kategoriaID < kategorieOsoba.length && kategoriaID >= 0){
             if (kategorieOsoba[kategoriaID].equals(valueSearchCategory)){
-                getStan();
+                printStan();
                 return -1;
             }
         }
@@ -35,9 +32,19 @@ public abstract class Osoba implements Serializable {
     public String getImie() {return imie;}
     public int getWiek() {return wiek;}
 
-    public void getStan(){
+    public ArrayList<Object> getStan(){
+        ArrayList<Object> obj = new ArrayList<>();
+        obj.add(imie);
+        obj.add(nazwisko);
+        obj.add(pesel);
+        obj.add(gender);
+        obj.add(wiek);
+        return obj;
+    }
+
+    public void printStan(){
         System.out.println(this.getClass().getSimpleName());
         System.out.println("Imię: " + imie + "\nNazwisko: "+ nazwisko + "\nPesel: " + pesel +
-                "\nPłeć: "+ genderDictionary.get(gender) + "\nWiek: " + wiek);
+                "\nPłeć: "+ gender + "\nWiek: " + wiek);
     }
 }
