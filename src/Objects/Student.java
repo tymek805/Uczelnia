@@ -1,16 +1,19 @@
 package Objects;
 
+import Obserwator.StudentObserver;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class Student extends Osoba{
     private int numerIndeksu, rokStudiow;
     private String output = "";
-    private final String[] stanStudentaLista = {"uczestnik programu ERASMUS", "student I-stopnia studiów", "student II-stopnia studiów", "student studiów stacjonarnych", "student studiów niestacjonarnych"};
+    private final String[] stanStudentaLista = {"student I-stopnia studiów", "student studiów stacjonarnych", "uczestnik programu ERASMUS", "student II-stopnia studiów", "student studiów niestacjonarnych"};
     private String[] stanStudenta;
     private final String[] kategorieStudent;
     private ArrayList<Kurs> kursy = new ArrayList<>();
-    private ArrayList<Double> oceny;
+    private ArrayList<Double> oceny = new ArrayList<>();
+
+    private StudentObserver observer = new StudentObserver(this);
     private boolean czyZdaje;
 
     public Student(String[] args) {
@@ -25,6 +28,7 @@ public class Student extends Osoba{
         if (!output.equals("")){
         output = output.substring(0, output.length()-2);}
         this.kategorieStudent = new String[]{String.valueOf(numerIndeksu), String.valueOf(rokStudiow)};
+
     }
 
     public void writeKursy(){
@@ -64,13 +68,25 @@ public class Student extends Osoba{
         return obj;
     }
 
-    public void startKursu(Kurs kurs){kursy.add(kurs);}
-    public void koniecKursu(Kurs kurs) {kursy.remove(kurs);}
+    public void startKursu(Kurs kurs){kursy.add(kurs); notifyObserver("ECTS");}
+    public void koniecKursu(Kurs kurs) {kursy.remove(kurs); notifyObserver("ECTS");}
 
-    public void dodajOcene(Double ocena){oceny.add(ocena);}
+    public void dodajOcene(Double ocena){oceny.add(ocena); notifyObserver("ocena");}
     public ArrayList<Double> getOceny() {return oceny;}
 
     public void setCzyZdaje(boolean czyZdaje) {this.czyZdaje = czyZdaje;}
+    public boolean getCzyZdaje() {return czyZdaje;}
 
+    public void registerObserver(StudentObserver observer)
+    {
+        this.observer = observer;
+    }
+    public void removeObserver()
+    {
+        this.observer = null;
+    }
 
+    private void notifyObserver(String value){
+        observer.update(value);
+    }
 }

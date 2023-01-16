@@ -2,6 +2,8 @@ package Management;
 
 import Objects.Kurs;
 import Objects.Osoba;
+import Objects.Student;
+import Obserwator.StudentObserver;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,9 +33,11 @@ public class FileChanges implements Serializable {
 
         ArrayList<Osoba> osoby = manager.getOsoby();
         ArrayList<Kurs> kursy = manager.getKursy();
+        ArrayList<StudentObserver> studentObservers = new ArrayList<>();
         for (Object obj:objectsList) {
             if (obj instanceof Osoba) osoby.add((Osoba)obj);
             else if (obj instanceof Kurs) kursy.add((Kurs)obj);
+            else if (obj instanceof StudentObserver) studentObservers.add((StudentObserver) obj);
         }
         manager.setOsoby(osoby);
         manager.setKursy(kursy);
@@ -68,7 +72,11 @@ public class FileChanges implements Serializable {
     private int saveFile(ArrayList<Osoba> osoby, ArrayList<Kurs> kursy, String path){
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path))) {
 
-            for (Osoba osoba:osoby) outputStream.writeObject(osoba);
+            for (Osoba osoba:osoby){
+                if (osoba instanceof Student)
+                    ((Student) osoba).removeObserver();
+                outputStream.writeObject(osoba);
+            }
             for (Kurs kurs:kursy)outputStream.writeObject(kurs);
             outputStream.writeObject(null);
 

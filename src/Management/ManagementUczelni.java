@@ -1,8 +1,7 @@
 package Management;
 
 import Objects.*;
-import Strategia.ByECTS;
-import Strategia.Sprawdzanie;
+import Obserwator.StudentObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +13,10 @@ public class ManagementUczelni {
 
     public ManagementUczelni(){
         fileHandler = new FileChanges(this);
-//        fileHandler.readData();
-        initializeOsoby();
-        initializeKursy();
+        fileHandler.readData();
+//        initializeOsoby();
+//        initializeKursy();
+        start();
     }
 
     private void initializeOsoby(){
@@ -70,7 +70,7 @@ public class ManagementUczelni {
         for (Kurs kurs : kursy){
             if (kategoriaID >= 0 && kurs.search(kategoriaID, valueSearchCategory) == 0)
                 wyszukaneKursy.add(kurs);
-            else
+            else if (kategoriaID == -1)
                 wyszukaneKursy.add(kurs);
         }
         return wyszukaneKursy;
@@ -94,7 +94,7 @@ public class ManagementUczelni {
 
     public ArrayList<String> otrzymajSkladowe(String optionCheck) {
         ArrayList<String> skladowe = new ArrayList<>();
-        if (optionCheck.contains("Pracownik") || optionCheck.equals("Student")) {
+        if (optionCheck.contains("Pracownik") || optionCheck.equals("Student") || optionCheck.equals("Osoba")) {
             skladowe.addAll(Arrays.asList("Imię", "Nazwisko", "Pesel", "Płeć", "Wiek"));
             if (optionCheck.contains("Pracownik")) {
                 skladowe.addAll(Arrays.asList("Staż pracy", "Pensja"));
@@ -110,6 +110,7 @@ public class ManagementUczelni {
         return skladowe;
     }
 
+    // GET ~ SET ~ ADD
     public ArrayList<Kurs> getKursy() {return kursy;}
     public ArrayList<Osoba> getOsoby() {return osoby;}
     public void setKursy(ArrayList<Kurs> kursy) {this.kursy = kursy;}
@@ -118,12 +119,12 @@ public class ManagementUczelni {
     public void addOsoba(Osoba osoba){osoby.add(osoba);}
     public void addKurs(Kurs kurs){kursy.add(kurs);}
 
-    public void ktoNiezdaje(){
-        for(Osoba osoba:osoby){
+    public void start(){
+        ArrayList<StudentObserver> observers = new ArrayList<>();
+        for (Osoba osoba : osoby)
             if (osoba instanceof Student){
-                Sprawdzanie test = new Sprawdzanie(new ByECTS());
-                ((Student) osoba).setCzyZdaje(test.check((Student) osoba));
+                observers.add(new StudentObserver((Student) osoba));
+                ((Student) osoba).registerObserver(new StudentObserver((Student) osoba));
             }
-        }
     }
 }

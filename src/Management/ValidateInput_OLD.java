@@ -3,9 +3,9 @@ package Management;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ValidateInput {
+public class ValidateInput_OLD {
     private Scanner scanner;
-    public ValidateInput(){
+    public ValidateInput_OLD(){
         scanner = new Scanner(System.in);
     }
 

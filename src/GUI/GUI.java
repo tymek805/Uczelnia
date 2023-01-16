@@ -4,6 +4,7 @@ import Komparatory.SortByECTS_Professor;
 import Komparatory.SortByFullname;
 import Komparatory.SortBySurname;
 import Komparatory.SortBySurnameAge;
+import Management.InputValidatorClass;
 import Management.ManagementUczelni;
 import Objects.*;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class GUI {
+public class GUI extends InputValidatorClass {
     private JPanel currentDisplay;
     private final CardLayout cardLayout = new CardLayout();
     private final ManagementUczelni manager;
@@ -76,9 +77,17 @@ public class GUI {
         functionPanel.add(sortBT);
 
         // Blank
+        JPanel doesSatisfyContainer = new JPanel(new GridLayout(2, 1));
+
+        JButton addValueBT = new JButton("Dodaj Ocenę / Kurs");
+        addValueBT.addActionListener(this::dodajKursOcene);
+        doesSatisfyContainer.add(addValueBT);
+
         JButton blankBT = new JButton("");
         blankBT.setEnabled(false);
-        functionPanel.add(blankBT);
+        doesSatisfyContainer.add(blankBT);
+
+        functionPanel.add(doesSatisfyContainer);
 
         // Koniec
         JButton koniecBT = new JButton("Zakończ");
@@ -92,7 +101,7 @@ public class GUI {
     private JTable  fillTable (String classValue, ArrayList<Object> objectArrayList){
         String[]  columnNames = manager.otrzymajSkladowe(classValue).toArray(new String[0]);
 
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
+            DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
             @Override
             public boolean isCellEditable(int row, int column){return false;}
         };
@@ -111,50 +120,55 @@ public class GUI {
         return new JScrollPane(fillTable(classValue, objectArrayList));
     }
 
-    private void classSelected(ActionEvent event){
+    private void addNewObjectComponents (ActionEvent event){
         if (!event.getSource().toString().contains("invalid")) {
             JComboBox<?> source = (JComboBox<?>) event.getSource();
-
             String klasa = (String) source.getSelectedItem();
-            ArrayList<String> skladowe = manager.otrzymajSkladowe(klasa);
-            String[] args = new String[skladowe.size()];
-
+            ArrayList<String> components = manager.otrzymajSkladowe(klasa);
             JPanel panel = (JPanel) source.getClientProperty("panel");
+
             if (panel.getComponents().length == 3) panel.remove(2);
             JPanel container = new JPanel(new BorderLayout());
-            JPanel valuesContainer = new JPanel(new GridLayout(skladowe.size(), 1));
-            for (int i = 0; i < skladowe.size(); i++) {
-                String currentVal = skladowe.get(i);
-                JPanel componentPanel = new JPanel(new FlowLayout());
-                JLabel componentLabel = new JLabel(currentVal);
-                componentPanel.add(componentLabel);
-                if (currentVal.equals("Stan Studenta")) args[i] = "X";
-                else {
-                    if (currentVal.equals("Płeć")) {
-                        JComboBox<String> genderCB = new JComboBox<>(new String[]{"Mężczyzna", "Kobieta"});
-                        genderCB.setSelectedIndex(-1);
-                        componentPanel.add(genderCB);
-                    } else if (currentVal.equals("Stanowisko")) {
-                        String[] stanowiska = new String[0];
-                        if (klasa.equals(classValues[2]))
-                            stanowiska = new String[]{"Asystent", "Adiunkt", "Profesor Nadzwyczajny", "Profesor Zwyczajny", "Wykładowca"};
-                        else if (klasa.equals(classValues[1]))
-                            stanowiska = new String[]{"Referent", "Specjalista", "Starszy Specjalista", "Kierownik"};
+            JPanel valuesContainer = new JPanel(new GridLayout(components.size(), 1));
 
-                        JComboBox<String> positionCB = new JComboBox<>(stanowiska);
-                        positionCB.setSelectedIndex(-1);
-                        componentPanel.add(positionCB);
-                    } else {
-                        JTextField componentTextField = new JTextField(JTextField.TRAILING);
-                        componentPanel.add(componentTextField);
+            for (int i = 0; i < components.size(); i++) {
+                String currentValue = components.get(i);
+                JPanel componentPanel = new JPanel();
+
+                if (!currentValue.equals("Stan Studenta")) componentPanel.add(new JLabel(currentValue));
+                if (currentValue.equals("Płeć")) {
+                    JComboBox<String> genderCB = new JComboBox<>(new String[]{"Mężczyzna", "Kobieta"});
+                    genderCB.setSelectedIndex(-1);
+                    componentPanel.add(genderCB);
+                }
+                else if (currentValue.equals("Stanowisko")) {
+                    String[] stanowiska = new String[0];
+                    if (klasa.equals(classValues[2]))
+                        stanowiska = new String[]{"Asystent", "Adiunkt", "Profesor Nadzwyczajny", "Profesor Zwyczajny", "Wykładowca"};
+                    else if (klasa.equals(classValues[1]))
+                        stanowiska = new String[]{"Referent", "Specjalista", "Starszy Specjalista", "Kierownik"};
+
+                    JComboBox<String> positionCB = new JComboBox<>(stanowiska);
+                    positionCB.setSelectedIndex(-1);
+                    componentPanel.add(positionCB);
+                }
+                else if(currentValue.equals("Stan Studenta")){
+                    JPanel checkboxAllPanel = new JPanel(new GridLayout(2, 3));
+                    String[] stanStudentaLista = {"student I-stopnia studiów", "student studiów stacjonarnych", "uczestnik programu ERASMUS", "student II-stopnia studiów", "student studiów niestacjonarnych"};
+                    for (String s : stanStudentaLista) {
+                        JCheckBox checkBox = new JCheckBox(s);
+                        checkboxAllPanel.add(checkBox);
                     }
-//                        case "Wiek", "Staż pracy", "Pensja", "Liczba publikacji", "Liczba nadgodzin", "Numer indeksu", "Rok studiów", "Punkty ECTS" ->
-//                                args[i] = String.valueOf(intValidator());
-//                        default -> args[i] = scanner.next();
+                    componentPanel.add(checkboxAllPanel);
+                }
+                else {
+                    JTextField componentTextField = new JTextField(JTextField.TRAILING);
+                    componentPanel.add(componentTextField);
                 }
                 valuesContainer.add(componentPanel);
             }
-            container.add(valuesContainer, BorderLayout.CENTER);
+            container.add(valuesContainer);
+
             panel.add(container, BorderLayout.CENTER, 2);
             panel.revalidate();
             panel.revalidate();
@@ -165,34 +179,64 @@ public class GUI {
 
         JComboBox<String> klasaCB = new JComboBox<>(classValues);
         klasaCB.putClientProperty("panel", panel);
-        klasaCB.addActionListener(this::classSelected);
+        klasaCB.addActionListener(this::addNewObjectComponents);
         klasaCB.setSelectedIndex(-1);
 
         JButton confirmBT = new JButton("DODAJ");
         confirmBT.addActionListener(e -> {
-            // todo Wprowadź co jeśli brakuje
-            if (klasaCB.getSelectedIndex() == -1){
-            }else {
+            if (klasaCB.getSelectedIndex() != -1){
                 JPanel valuePanel = (JPanel) ((JPanel) panel.getComponent(2)).getComponent(0);
                 int length = valuePanel.getComponents().length;
+                int klasaIDX = klasaCB.getSelectedIndex();
 
                 String[] args  = new String[length];
-                for (int i = 0; i < valuePanel.getComponents().length; i++){
+                for (int i = 0; i < length; i++){
                     JPanel temp = (JPanel) valuePanel.getComponent(i);
-                    Object obj = temp.getComponent(1);
-                    if (obj instanceof JTextField){ args[i] = ((JTextField) obj).getText();}
-                    else if (obj instanceof JComboBox<?>) {args[i] = ((JComboBox<?>) obj).getSelectedItem().toString();}
-                    System.out.println(args[i]);
+
+                    String nazwaTypu = "";
+                    Object obj;
+                    if (temp.getComponent(0) instanceof JLabel){
+                        nazwaTypu = ((JLabel) temp.getComponent(0)).getText();
+                        obj = temp.getComponent(1);
+                    }else {
+                        obj = temp.getComponent(0);
+                    }
+
+                    try{
+                        if (obj instanceof JTextField){ args[i] = inputValidator((JTextField) obj, nazwaTypu);}
+                        else if (obj instanceof JComboBox<?>) {args[i] = ((JComboBox<?>) obj).getSelectedItem().toString();}
+                        else if (obj instanceof JPanel){
+                            String[] stanStudentaArgs = new String[5];
+                            for (int j = 0; j < 5; j++){
+                                boolean value = ((JCheckBox) ((JPanel) obj).getComponent(j)).isSelected();
+                                if (value) stanStudentaArgs[j] = "TAK";
+                                else stanStudentaArgs[j] = "NIE";
+                            }
+                            args[i] = String.join(",", stanStudentaArgs);
+                        }
+                    } catch (NullPointerException exception){
+                        JOptionPane.showMessageDialog(panel, "Wypełnij wszystkie pola!", "",JOptionPane.WARNING_MESSAGE);
+                        klasaIDX = -1;
+                        break;
+                    } catch (NumberFormatException exception){
+                        JOptionPane.showMessageDialog(panel, "Niepoprawny format w polu:\n" + nazwaTypu, "", JOptionPane.WARNING_MESSAGE);
+                        klasaIDX = -1;
+                        break;
+                    }
                 }
-                int klasaIDX = klasaCB.getSelectedIndex();
 
                 if (klasaIDX == 0) manager.addOsoba(new Student(args));
                 else if (klasaIDX == 1) manager.addOsoba(new PracownikAdministracyjny(args));
                 else if (klasaIDX == 2) manager.addOsoba(new PracownikBadawczoDydaktyczny(args));
                 else if (klasaIDX == 3) manager.addKurs(new Kurs(args));
-            }
-        });
 
+                if (klasaIDX != -1){
+                    dodaj(event);
+                    JOptionPane.showMessageDialog(panel, "Dodanie obiektu zakończone pomyślnie!", "Sukces",JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            else JOptionPane.showMessageDialog(panel, "Wypełnij wszystkie pola!", "",JOptionPane.WARNING_MESSAGE);
+        });
         panel.add(klasaCB, BorderLayout.PAGE_START);
         panel.add(confirmBT, BorderLayout.PAGE_END);
 
@@ -227,7 +271,7 @@ public class GUI {
         JButton confirmBT = new JButton("WYSZUKAJ");
         confirmBT.addActionListener(e -> {
             if (klasaCB.getSelectedIndex() == -1){
-                System.err.println("Nie ma wprowadzonej wartości!");
+                JOptionPane.showMessageDialog(panel, "Nie ma wprowadzonej wartości!", "",JOptionPane.WARNING_MESSAGE);
             }else {
                 String klasa = (String) klasaCB.getSelectedItem();
                 int kategoriaID = kategoriaCB.getSelectedIndex();
@@ -319,6 +363,69 @@ public class GUI {
         currentDisplay.add(panel, "SORT-TABLE");
         cardLayout.show(currentDisplay, "SORT-TABLE");
     }
+    private void dodajKursOcene(ActionEvent event){
+        JPanel panel = new JPanel(new BorderLayout());
+        JPanel container = new JPanel(new FlowLayout());
+
+        String[] values = new String[]{"Ocena", "Kurs"};
+        JComboBox<String> kursOcenaCB = new JComboBox<>(values);
+        kursOcenaCB.setSelectedIndex(-1);
+        container.add(kursOcenaCB);
+
+        JComboBox<String> studentCB = new JComboBox<>();
+        studentCB.putClientProperty("panel", container);
+        ArrayList<Osoba> osoby = manager.getOsoby();
+        ArrayList<Student> students = new ArrayList<>();
+        for (Osoba osoba : osoby) {
+            if (osoba instanceof Student) {
+                studentCB.addItem(osoba.getImie() + " " + osoba.getNazwisko());
+                students.add((Student) osoba);
+            }
+        }
+        studentCB.addActionListener(e -> {
+            JComboBox<String> source = (JComboBox<String>) e.getSource();
+            if (source.getSelectedIndex() != -1){
+                String value = values[kursOcenaCB.getSelectedIndex()];
+                JPanel tempPanel = (JPanel) source.getClientProperty("panel");
+                if (tempPanel.getComponents().length == 4){ tempPanel.remove(3); tempPanel.remove(2);}
+                if (value.equals("Ocena")){
+                    JComboBox<Double> ocenaCB = new JComboBox<>();
+                    for (double i = 2.0; i < 6; i += 0.5) ocenaCB.addItem(i);
+                    ocenaCB.setSelectedIndex(-1);
+                    tempPanel.add(ocenaCB);
+                }else if (value.equals("Kurs")) {
+                    JComboBox<String> kursCB = new JComboBox<>();
+                    ArrayList<Kurs> kursy = manager.getKursy();
+                    for (Kurs kurs: kursy) kursCB.addItem(kurs.getNazwa());
+                    kursCB.setSelectedIndex(-1);
+                    tempPanel.add(kursCB);
+                }
+                JButton confirmBT = new JButton("Dodaj");
+                confirmBT.addActionListener(e1 -> {
+                    int idx = ((JComboBox<?>)tempPanel.getComponent(1)).getSelectedIndex();
+                    Student student = students.get(idx);
+                    JComboBox<?> compontent = (JComboBox<?>) tempPanel.getComponent(2);
+                    if (compontent.getSelectedItem() instanceof Double){
+                        student.dodajOcene((Double) compontent.getSelectedItem());
+                        observerNotified("Średnia", student.getCzyZdaje());
+                    }else if (compontent.getSelectedItem() instanceof String){
+                        int componentIDX = compontent.getSelectedIndex();
+                        student.startKursu(manager.getKursy().get(componentIDX));
+                        observerNotified("ECTS", student.getCzyZdaje());
+                    }
+                });
+
+                tempPanel.add(confirmBT);
+                tempPanel.revalidate();
+                tempPanel.repaint();
+            }
+        });
+        studentCB.setSelectedIndex(-1);
+        container.add(studentCB);
+        panel.add(container, BorderLayout.PAGE_START);
+        currentDisplay.add(panel, "SATISFY");
+        cardLayout.show(currentDisplay, "SATISFY");
+    }
     private void exitGUI(ActionEvent event){manager.saveData();}
     private void comparison(ActionEvent event){
         if (!event.getSource().toString().contains("invalid")){
@@ -336,13 +443,13 @@ public class GUI {
                 container.add(new JScrollPane(fillTable("Kurs", sortedKursyObj)));
             }else {
                 ArrayList<Osoba> sortedOsoby = (ArrayList<Osoba>) manager.getOsoby().clone();
-                ArrayList<Object> sortedOsobyObj = new ArrayList<>(sortedOsoby);
-
                 if (choiceValue == 0) sortedOsoby.sort(new SortBySurname());
                 else if (choiceValue == 1) sortedOsoby.sort(new SortByFullname());
                 else if (choiceValue == 2) sortedOsoby.sort(new SortBySurnameAge());
 
-                JTable table = fillTable("Student", sortedOsobyObj);
+                ArrayList<Object> sortedOsobyObj = new ArrayList<>(sortedOsoby);
+                JTable table = fillTable("Osoba", sortedOsobyObj);
+
                 for (int i = table.getColumnCount() - 1; i > 1; i--){
                     if (i != 4) table.removeColumn(table.getColumnModel().getColumn(i));
                 }
@@ -354,4 +461,12 @@ public class GUI {
             panel.revalidate();
         }
     }
+
+    public void observerNotified(String value, boolean trueFalse){
+        String str = " niewystarczająca";
+        if (trueFalse){
+            str = " wystarczająca";
+        }
+        JOptionPane.showMessageDialog(currentDisplay, value + str + " aby uzyskać zaliczenie", "",JOptionPane.WARNING_MESSAGE);};
 }
+    

@@ -5,11 +5,11 @@ import Komparatory.SortByFullname;
 import Komparatory.SortBySurname;
 import Komparatory.SortBySurnameAge;
 import Management.ManagementUczelni;
-import Management.ValidateInput;
+import Management.ValidateInput_OLD;
 import Objects.*;
 import java.util.*;
 
-public class UserInput extends ValidateInput {
+public class UserInput extends ValidateInput_OLD {
     private final Scanner scanner;
     private final ManagementUczelni manager;
     private final ArrayList<Osoba> osobaArrayList;
@@ -53,7 +53,7 @@ public class UserInput extends ValidateInput {
                 case ("wyszukaj") -> wyszukaj();
                 case ("sort") -> comparison();
                 case ("delete") -> usuwanieObiektu();
-                case ("kto") -> manager.ktoNiezdaje();
+//                case ("kto") -> manager.ktoNiezdaje();
                 case ("pomoc") -> System.out.print("");
                 default -> System.err.println("Nieznana funkcja!");
             }

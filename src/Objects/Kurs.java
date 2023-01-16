@@ -26,6 +26,7 @@ public class Kurs implements Serializable {
         return -1;
     }
 
+    public String getNazwa(){return nazwa;}
     public int getPunktyECTS() {return punktyECTS;}
     public String getProwadzacy() {return prowadzacy;}
 
