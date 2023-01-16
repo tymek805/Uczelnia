@@ -7,17 +7,7 @@ public class Main {
         new GUI(manager);
     }
 }
-
-//TODO Lista 6
-// - Zaimplementuj wzorzec projektowy:
-//      a. Strategia
-//      b. Obserwator
-
-
 //TODO Lista 7 etap 2
 // Usuwanie wszystkich powtarzających się Osób przy użyciu kolekcji HashSet.
 // Zakładamy, że równe obiekty w przypadku Studentów to takie, które posiadają taki sam numer indeksu,
 // natomiast w przypadku Pracowników uczelni to takie, które posiadają taki sam numer PESEL.
-
-//TODO Ogólne
-// - dla studenta dodawanie kursu
