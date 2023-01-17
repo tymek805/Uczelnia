@@ -11,6 +11,7 @@ import Objects.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -49,7 +50,7 @@ public class GUI extends InputValidatorClass {
     private JPanel sidebarInitializer(){
         JPanel functionPanel = new JPanel();
         functionPanel.setVisible(true);
-        functionPanel.setLayout(new GridLayout(7, 1));
+        functionPanel.setLayout(new GridLayout(8, 1));
 
         // Wyszukaj
         JButton wyszukajBT = new JButton("Wyszukaj");
@@ -75,6 +76,11 @@ public class GUI extends InputValidatorClass {
         JButton sortBT = new JButton("Sortowanie");
         sortBT.addActionListener(this::sort);
         functionPanel.add(sortBT);
+
+        // Duplicate
+        JButton duplicateBT = new JButton("Usuń duplikaty");
+        duplicateBT.addActionListener(this::duplicate);
+        functionPanel.add(duplicateBT);
 
         // Blank
         JPanel doesSatisfyContainer = new JPanel(new GridLayout(2, 1));
@@ -224,7 +230,6 @@ public class GUI extends InputValidatorClass {
                         break;
                     }
                 }
-
                 if (klasaIDX == 0) manager.addOsoba(new Student(args));
                 else if (klasaIDX == 1) manager.addOsoba(new PracownikAdministracyjny(args));
                 else if (klasaIDX == 2) manager.addOsoba(new PracownikBadawczoDydaktyczny(args));
@@ -362,6 +367,39 @@ public class GUI extends InputValidatorClass {
 
         currentDisplay.add(panel, "SORT-TABLE");
         cardLayout.show(currentDisplay, "SORT-TABLE");
+    }
+    private void duplicate(ActionEvent event){
+        JPanel panel = new JPanel(new BorderLayout());
+
+        ArrayList<Osoba> osobaArrayList = manager.getOsoby();
+        ArrayList<Object> objectArrayList = new ArrayList<>();
+        HashSet<String> peselHashSet = new HashSet<>();
+        HashSet<Integer> indexHashSet = new HashSet<>();
+        for (int i = 0; i < osobaArrayList.size(); i++){
+            Osoba osoba = osobaArrayList.get(i);
+            if (osoba instanceof PracownikUczelni){
+                if (!peselHashSet.add(osoba.getPesel())){
+                    JOptionPane.showMessageDialog(panel, "Duplikat został znaleziony dla peselu: " + osoba.getPesel(), "",JOptionPane.INFORMATION_MESSAGE);
+                    osobaArrayList.remove(osoba);
+                }else {
+                    peselHashSet.add(osoba.getPesel());
+                    objectArrayList.add(osoba);
+                }
+            }
+            else if (osoba instanceof Student){
+                int tempIndeks = ((Student) osoba).getNumerIndeksu();
+                if (!indexHashSet.add(tempIndeks)){
+                    JOptionPane.showMessageDialog(panel, "Duplikat został znaleziony dla indeksu: " + tempIndeks, "",JOptionPane.INFORMATION_MESSAGE);
+                    osobaArrayList.remove(osoba);
+                }else{
+                    indexHashSet.add(tempIndeks);
+                    objectArrayList.add(osoba);
+                }
+            }
+        }
+        panel.add(new JScrollPane(fillTable("Osoba", objectArrayList)), BorderLayout.CENTER);
+        currentDisplay.add(panel, "DUPLICATE-TABLE");
+        cardLayout.show(currentDisplay, "DUPLICATE-TABLE");
     }
     private void dodajKursOcene(ActionEvent event){
         JPanel panel = new JPanel(new BorderLayout());

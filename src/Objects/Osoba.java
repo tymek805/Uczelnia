@@ -31,6 +31,7 @@ public abstract class Osoba implements Serializable {
     public String getNazwisko() {return nazwisko;}
     public String getImie() {return imie;}
     public int getWiek() {return wiek;}
+    public String getPesel() {return pesel;}
 
     public ArrayList<Object> getStan(){
         ArrayList<Object> obj = new ArrayList<>();

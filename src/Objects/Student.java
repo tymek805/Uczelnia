@@ -73,6 +73,7 @@ public class Student extends Osoba{
 
     public void dodajOcene(Double ocena){oceny.add(ocena); notifyObserver("ocena");}
     public ArrayList<Double> getOceny() {return oceny;}
+    public int getNumerIndeksu() {return numerIndeksu;}
 
     public void setCzyZdaje(boolean czyZdaje) {this.czyZdaje = czyZdaje;}
     public boolean getCzyZdaje() {return czyZdaje;}
